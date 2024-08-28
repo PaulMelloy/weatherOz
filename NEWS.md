@@ -1,5 +1,8 @@
+# weatherOz 1.1.0
+
 # weatherOz 1.1.0  
-## New Feature  
+## Minor Changes  
+### New Features  
 * New function `impute_diurnal()` estimates diurnal fluctuations from daily 
 maximum and minimum values.  
 * New functions `impute_hourly()` expands downloaded data to hourly by imputing
