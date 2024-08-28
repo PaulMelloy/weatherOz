@@ -1,3 +1,12 @@
+# weatherOz 1.1.0  
+## New Feature  
+* New function `impute_diurnal()` estimates diurnal fluctuations from daily 
+maximum and minimum values.  
+* New functions `impute_hourly()` expands downloaded data to hourly by imputing
+temperature `tm`, relative humidity `rh` and calculating `vp` and `vpd` from these
+imputed values.  
+
+
 # weatherOz 1.0.0
 
 ## Major Changes
