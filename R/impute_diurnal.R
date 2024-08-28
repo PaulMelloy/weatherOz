@@ -14,7 +14,7 @@
 #' @param min_hour integer, hour in the day when minimum observation was made.
 #' @param l_out integer, length out of function. `24` for hourly observations (default.
 #'  `1440` for minute. `48` for half hourly **Still Experimental!**
-#' @param ind_out integer, select the output useing an index number similar it
+#' @param ind_out integer, select the output using an index number similar it
 #'  `1:10[ind_out]`
 #'
 #' @return numeric vector equal to the of length h. An the respective hour from
@@ -81,8 +81,6 @@ impute_diurnal <-
 
          rh_diff <- max_obs - min_obs
 
-         # occilating_factor <- c(seq(6,18,length.out = max2min_time+1),
-         #                        seq(18,30,length.out = min2max_time+1)[-c(1,min2max_time+1)])
          occilating_factor <-
             c(seq(6, 18, length.out = (max2min_time + 1) * l_out),
               seq(18, 30, length.out = (min2max_time + 1) *
@@ -107,10 +105,6 @@ impute_diurnal <-
                                 h_max = max_hour,
                                 q = 1:(24 * l_out))]
 
-         # day_hourly <- vector(mode = "numeric", length = 24)
-         # day_hourly[1:(max_hour-1)] <- rh_hourly[(min_ind - (min_hour)+1):24]
-         # day_hourly[(max_hour):24] <- rh_hourly[1:(min_ind - min_hour)]
-
          if (inherits(h, "numeric") |
              inherits(h, "integer")) {
             h_ind <- h %% (24 * l_out)
@@ -134,84 +128,4 @@ impute_diurnal <-
             stop("'h' should be a numeric or POSIXt vector")
          }
    }
-
-#_______________________________________________
-# Rolling over 2 day period
-rolling_window <- 2 * 24
-
-#' Fill Imputation
-#'
-#' Imputes a new vector of variables which can be used to fill NA values.
-#'
-#' @param ind index vector
-#' @param var numeric vector of values containing NA_real values for imputation
-#' @param times POSIXct vector of time in hourly increments
-#' @param FUN_n rolling window size
-#'
-#' @return vector of var values filling NA
-#' @export
-#'
-#' @examples
-#' dt <- weather
-#' rolling_window <- length(dt[is.na(temp),temp])*2
-#' dt[,indx := .I]
-#'
-#' dt[, tm_imp := round(data.table::frollapply(
-#'   indx,
-#'   n = rolling_window,
-#'   fill = NA_real_,
-#'   FUN = impute_fill,
-#'   FUN_n = rolling_window,
-#'   times = times,
-#'   var = temp,
-#'   align = "center"
-#'   ),3)]
-#'
-#' plot(dt[2950:3100, temp], type = "l")
-#' lines(dt[2950:3100, tm_imp], type = "l", col = "red")
-impute_fill <- function(ind,var,times, FUN_n){
-
-   # define data.table globals
-   HOUR <- TEMP <- NULL
-
-   n_NA <- ceiling(FUN_n/2)
-   time_vec <- times[ind]
-   var_vec <- var[ind]
-
-   #if(sum(is.na(var_vec)) > n_NA) return(NA)
-
-   # get the hour in the middle of the rolling window
-   # We want to estimate this hour
-   t1 <- as.numeric(format(time_vec[n_NA], "%H"))
-#cat(as.character(ind), "\n")
-
-   dt_2 <- data.table::data.table(TIME = time_vec,
-                                  TEMP = var_vec,
-                                  HOUR = data.table::hour(time_vec))
-
-   # max_tm <- max(var_vec, na.rm = TRUE)
-   # min_tm <- min(var_vec, na.rm = TRUE)
-   # max_h <- hour(time_vec)[which(max_tm)]
-   # min_h <- hour(time_vec)[which(min_tm)]
-   # # Do rolling window of impute diurnal here####################3
-   # dt_2[, i_di := impute_diurnal(
-   #    h = HOUR,
-   #    max_obs = max_tm,
-   #    min_obs = min_tm,
-   #    max_hour = max_h,
-   #    min_hour = min_h
-   # )]
-
-   # filter data to include data one hour prior and one hour after the center of
-   #  the rolling window hour
-   dt_3 <- dt_2[HOUR >= (t1 - 1) &
-                   HOUR <= (t1 + 1),]
-
-   # find the mean of these values
-   tm1 <- dt_3[, mean(TEMP, na.rm = TRUE)]
-   #cat(colnames(tm1), "   ")
-   #tm1 <- tm1[order(HOUR),av_tm]
-   return(tm1)
-
-}
 
