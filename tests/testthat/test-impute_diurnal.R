@@ -78,3 +78,28 @@ test_that("large then small as returns expected values", {
                                                               16.21886,14.50001),tolerance = 0.000001)
 
 })
+
+test_that("impute_hourly() succeeds on data_drill",{
+  # get data
+  vcr::use_cassette("silo_get_data_drill_all_daily_values", {
+      skip_if_offline()
+      withr::local_timezone(tz = "Australia/Perth")
+      wd <- get_data_drill(
+        latitude = -27.85,
+        longitude = 150.05,
+        start_date = "2021-06-01",
+        end_date = "2021-06-01",
+        api_key = "slavish_moo_0k@icloud.com"
+      )
+    })
+
+  wh <- impute_hourly(wd)
+  expect_equal(nrow(wh), 24)
+    expect_length(wh, 44 + 4)
+    expect_true(all(c("time","tm","rh","vpd","vp") %in% names(wh)))
+    expect_s3_class(wd, class = "data.table")
+    expect_equal(14,wh[wh$tm == max(wh$tm), data.table::hour(time)])
+    expect_equal(4,wh[wh$tm == min(wh$tm), data.table::hour(time)])
+})
+
+
