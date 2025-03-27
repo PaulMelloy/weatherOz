@@ -20,6 +20,7 @@
 #' @return numeric vector equal to the of length h. An the respective hour from
 #'  the day
 #' @export
+#' @autoglobal
 #'
 #' @examples
 #' impute_diurnal()

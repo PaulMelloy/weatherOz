@@ -21,9 +21,8 @@
 #'   * `vpd` (vapour pressure deficit),
 #'   * `tm` (temperature in degrees celcius),
 #'   * `rh` (relative humidity %),
-#'
-#' @export
 #' @autoglobal
+#' @export
 #'
 #' @examples
 #' \dontrun{
