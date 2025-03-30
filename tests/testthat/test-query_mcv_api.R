@@ -7,6 +7,6 @@
 .values = "precip"
 .format = "csv"
 .radius = NULL
-.api_key = "xxxxxxxxxxxxxxxxxxxx"
+.api_key = "XXXXXXXXXXXXXXxx"
 .dataset = "observations"
-
+.freq = "daily"
